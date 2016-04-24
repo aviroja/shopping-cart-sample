@@ -1,19 +1,24 @@
 package com.cg.sample.cart;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GroceryBasket implements Basket {
-    private List<Item> items = new ArrayList<>();
+    private Map<Item, Integer> items = new HashMap<>();
     private BigDecimal total = new BigDecimal(0.0);
+    private BigDecimal totalAfterDiscount = new BigDecimal(0.0);
 
     @Override
     public boolean addToBasket(final String itemName) {
         Item item = Item.get(itemName);
         if (item != null) {
-            this.items.add(item);
-            this.total = this.total.add(item.getPrice());
+            if (items.containsKey(item)) {
+                items.put(item, (items.get(item) + 1));
+            } else {
+                items.put(item, 1);
+            }
+            total = total.add(item.getPrice());
             return true;
         } else {
             return false;
@@ -21,12 +26,21 @@ public class GroceryBasket implements Basket {
     }
 
     @Override
-    public List<Item> getItems() {
-        return this.items;
+    public Map<Item, Integer> getItems() {
+        return items;
     }
 
     @Override
     public BigDecimal getTotal() {
-        return this.total.setScale(2, BigDecimal.ROUND_HALF_UP);
+        return total.setScale(2, BigDecimal.ROUND_HALF_UP);
+    }
+
+    @Override
+    public BigDecimal getTotalAfterDiscount() {
+        DiscountCalculator calculator = new DiscountCalculator();
+        for (Map.Entry<Item, Integer> entry : items.entrySet()) {
+            totalAfterDiscount = totalAfterDiscount.add(calculator.calculatePrice(entry.getKey(), entry.getValue()));
+        }
+        return totalAfterDiscount.setScale(2, BigDecimal.ROUND_HALF_UP);
     }
 }

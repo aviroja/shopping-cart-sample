@@ -18,8 +18,7 @@ public class Till {
         Basket basket = new GroceryBasket();
 
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Please start scanning items by entering name. " +
-                                   "Enter '" + EXIT + "' to finish.");
+        System.out.println("Please start scanning items by entering name. Enter '" + EXIT + "' to finish.");
         while (true) {
             String input = scanner.next();
             if (input.equalsIgnoreCase(EXIT)) {
@@ -30,6 +29,6 @@ public class Till {
             }
         }
 
-        System.out.println(basket.getItems() + " ==> " + basket.getTotal());
+        System.out.println(basket.getItems() + " ==> " + basket.getTotalAfterDiscount());
     }
 }
